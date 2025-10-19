@@ -14,8 +14,8 @@ logger = logging.getLogger(__name__)
 
 @ADAPTATION_REGISTRY.register()
 class Prompt_ReservoirTTA(nn.Module):
-    def __init__(self, cfg, model, num_classes):
-        super().__init__()
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
+        super().__init__(scheduler=scheduler)
         self.cfg = cfg
 
         self.lamda = 1.0

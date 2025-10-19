@@ -19,6 +19,7 @@ from utils.losses import Entropy
 from methods.reservoirtta_utils import Plug_in_Bowl
 from copy import deepcopy
 from tqdm import tqdm
+from schedulers import get_scheduler
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +29,8 @@ class EATA_ReservoirTTA(TTAMethod):
     """EATA adapts a model by entropy minimization during testing.
     Once EATAed, a model adapts itself by updating on every forward.
     """
-    def __init__(self, cfg, model, num_classes):
-        super().__init__(cfg, model, num_classes)
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
+        super().__init__(cfg, model, num_classes, scheduler=scheduler)
 
         self.num_samples_update_1 = 0  # number of samples after first filtering, exclude unreliable samples
         self.num_samples_update_2 = 0  # number of samples after second filtering, exclude both unreliable and redundant samples
@@ -111,12 +112,13 @@ class EATA_ReservoirTTA(TTAMethod):
         self.reservoir_output = self.reservoir.clustering(imgs_test)
         
         with torch.no_grad():
-            self.reservoir(ensembling=True, which_model='student')
-            ensembled_outputs = self.model(imgs_test)
+            self.reservoir(ensembling=True, which_model='student')  # Sets student to be current shift model
+            ensembled_outputs = self.model(imgs_test)               # TODO: change this so we take from self.reservoir_output
 
         self.reservoir(ensembling=False, which_model='student')
 
         self.optimizer.load_state_dict(self.reservoir.student.optimizer_reservoir[self.reservoir.model_idx])
+        self.scheduler = get_scheduler(self.optimizer, **self.cfg.OPTIM.SCHEDULER)
         self.optimizer.zero_grad()
         ####################### Reservoir End #######################
 

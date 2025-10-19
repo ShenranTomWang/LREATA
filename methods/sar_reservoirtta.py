@@ -28,8 +28,8 @@ class SAR_ReservoirTTA(TTAMethod):
     """SAR online adapts a model by Sharpness-Aware and Reliable entropy minimization during testing.
     Once SARed, a model adapts itself by updating on every forward.
     """
-    def __init__(self, cfg, model, num_classes):
-        super().__init__(cfg, model, num_classes)
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
+        super().__init__(cfg, model, num_classes, scheduler=scheduler)
 
         self.margin_e0 = cfg.EATA.MARGIN_E0 * math.log(num_classes)  # margin E_0 for reliable entropy minimization, Eqn. (2)
         self.reset_constant_em = cfg.SAR.RESET_CONSTANT_EM  # threshold e_m for model recovery scheme

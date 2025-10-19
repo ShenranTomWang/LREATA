@@ -11,12 +11,13 @@ logger = logging.getLogger(__name__)
 
 
 class TTAMethod(nn.Module):
-    def __init__(self, cfg, model, num_classes):
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
         super().__init__()
         self.cfg = cfg
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.model = self.decorate_model(model)
         self.num_classes = num_classes
+        self.scheduler = scheduler
         self.episodic = cfg.MODEL.EPISODIC
         self.dataset_name = cfg.CORRUPTION.DATASET
         self.steps = cfg.OPTIM.STEPS

@@ -19,8 +19,8 @@ def update_model_probs(x_ema, x, momentum=0.9):
 
 @ADAPTATION_REGISTRY.register()
 class ROID_ReservoirTTA(TTAMethod):
-    def __init__(self, cfg, model, num_classes):
-        super().__init__(cfg, model, num_classes)
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
+        super().__init__(cfg, model, num_classes, scheduler=scheduler)
 
         self.use_weighting = cfg.ROID.USE_WEIGHTING
         self.use_prior_correction = cfg.ROID.USE_PRIOR_CORRECTION

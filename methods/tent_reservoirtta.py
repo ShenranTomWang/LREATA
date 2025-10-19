@@ -18,8 +18,8 @@ class Tent_ReservoirTTA(TTAMethod):
     """Tent adapts a model by entropy minimization during testing.
     Once tented, a model adapts itself by updating on every forward.
     """
-    def __init__(self, cfg, model, num_classes):
-        super().__init__(cfg, model, num_classes)
+    def __init__(self, cfg, model, num_classes, scheduler: str = None):
+        super().__init__(cfg, model, num_classes, scheduler=scheduler)
 
         # setup loss function
         self.softmax_entropy = Entropy()
