@@ -12,6 +12,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
+from .reservoirtta_utils import Plug_in_Bowl
 from .shift_classifier import ShiftClassifier
 from methods.base import TTAMethod
 from datasets.data_loading import get_source_loader
@@ -59,7 +60,15 @@ class LREATA(TTAMethod):
             self.fishers = None
 
         self.shift_classifier = ShiftClassifier(cfg, img_size=self.img_size[0])
-        self.reservoir = {}
+        self.scheduler = scheduler
+        self.reservoir = Plug_in_Bowl(
+            cfg, self.img_size[0], self.params, 
+            student_optimizer=self.optimizer,
+            student_model=self.model,
+            scheduler=self.scheduler
+        )
+        self.scheduler_reservoir = {}
+        self.scheduler = None
 
         # note: reduce memory consumption by only saving normalization parameters
         self.src_model = deepcopy(self.model).cpu()
@@ -101,11 +110,7 @@ class LREATA(TTAMethod):
         imgs_test = x[0]
 
         ####################### Reservoir Start #######################
-        shift_classifier_output = self.shift_classifier(imgs_test)
-        if shift_classifier_output['new_cluster']:
-            self.reservoir[self.shift_classifier['model_idx']] = {
-                'scheduler': deepcopy(self.scheduler)       # TODO: paused here
-            }
+        self.reservoir_output = self.reservoir.clustering(imgs_test, scheduler=self.scheduler)
         
         with torch.no_grad():
             self.reservoir(ensembling=True, which_model='student')  # Sets student to be current shift model
@@ -114,7 +119,9 @@ class LREATA(TTAMethod):
         self.reservoir(ensembling=False, which_model='student')
 
         self.optimizer.load_state_dict(self.reservoir.student.optimizer_reservoir[self.reservoir.model_idx])
-        self.scheduler = get_scheduler(self.optimizer, **self.cfg.OPTIM.SCHEDULER)
+        if self.reservoir_output['new_cluster']:
+            self.scheduler_reservoir[self.reservoir_output['model_idx']] = get_scheduler(self.optimizer, **self.cfg.OPTIM.SCHEDULER)
+            self.scheduler = self.scheduler_reservoir[self.reservoir_output['model_idx']]
         self.optimizer.zero_grad()
         ####################### Reservoir End #######################
 
@@ -167,6 +174,7 @@ class LREATA(TTAMethod):
                 self.scaler.scale(loss).backward()
                 self.scaler.step(self.optimizer)
                 self.scaler.update()
+                self.scheduler.step()
             self.optimizer.zero_grad()
         else:
             outputs, loss, perform_update = self.loss_calculation(x)
@@ -174,6 +182,7 @@ class LREATA(TTAMethod):
             if perform_update:
                 loss.backward()
                 self.optimizer.step()
+                self.scheduler.step()
             self.optimizer.zero_grad()
 
             if perform_update:

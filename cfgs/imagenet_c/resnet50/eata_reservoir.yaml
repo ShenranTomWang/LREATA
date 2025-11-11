@@ -1,5 +1,5 @@
 MODEL:
-  ADAPTATION: eata_reservoir
+  ADAPTATION: eata_reservoirtta
   ARCH: resnet50
 TEST:
   BATCH_SIZE: 64
@@ -38,3 +38,5 @@ SOURCE:
 RESERVOIRTTA:
   MAX_NUM_MODELS: 16
   SIZE_OF_BUFFER: 1024
+SAVE_DIR: /home/shenranw/scratch-hgonen/LREATA/out
+DATA_DIR: /home/shenranw/scratch-hgonen/datasets

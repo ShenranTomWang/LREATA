@@ -184,7 +184,7 @@ class Plug_in_Bowl(torch.nn.Module):
         self.model_idx_prob = model_prob.amax()
         self.cluster_losses = cluster_losses
 
-        return {'model_idx':self.model_idx, 'model_idx_prob':self.model_idx_prob, **cluster_losses}
+        return {'model_idx':self.model_idx, 'model_idx_prob':self.model_idx_prob, 'new_cluster': new_cluster, **cluster_losses}
     
     @torch.no_grad()
     def forward(self, ensembling=False, which_model='student', model_idx=None, model_prob=None):
