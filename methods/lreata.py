@@ -107,7 +107,7 @@ class LREATA(TTAMethod):
         imgs_test = x[0]
 
         ####################### Reservoir Start #######################
-        self.reservoir_output = self.reservoir.clustering(imgs_test, scheduler=self.scheduler)
+        self.reservoir_output = self.reservoir.clustering(imgs_test)
         
         with torch.no_grad():
             self.reservoir(ensembling=True, which_model='student')  # Sets student to be current shift model
@@ -116,9 +116,12 @@ class LREATA(TTAMethod):
         self.reservoir(ensembling=False, which_model='student')
 
         self.optimizer.load_state_dict(self.reservoir.student.optimizer_reservoir[self.reservoir.model_idx])
-        if self.reservoir_output['new_cluster']:
-            self.scheduler_reservoir[self.reservoir_output['model_idx']] = get_scheduler(self.optimizer, **self.cfg.OPTIM.SCHEDULER)
-            self.scheduler = self.scheduler_reservoir[self.reservoir_output['model_idx']]
+        if self.reservoir.model_idx in self.scheduler_reservoir:
+            self.scheduler = self.scheduler_reservoir[self.reservoir.model_idx]
+            self.scheduler.optimizer = self.optimizer
+        else:
+            self.scheduler_reservoir[self.reservoir.model_idx] = get_scheduler(optimizer=self.optimizer, **self.cfg.OPTIM.SCHEDULER)
+            self.scheduler = self.scheduler_reservoir[self.reservoir.model_idx]
         self.optimizer.zero_grad()
         ####################### Reservoir End #######################
 
