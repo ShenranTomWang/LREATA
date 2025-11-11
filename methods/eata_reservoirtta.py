@@ -122,7 +122,6 @@ class EATA_ReservoirTTA(TTAMethod):
         self.reservoir(ensembling=False, which_model='student')
 
         self.optimizer.load_state_dict(self.reservoir.student.optimizer_reservoir[self.reservoir.model_idx])
-        self.scheduler = get_scheduler(self.optimizer, **self.cfg.OPTIM.SCHEDULER)
         self.optimizer.zero_grad()
         ####################### Reservoir End #######################
 
