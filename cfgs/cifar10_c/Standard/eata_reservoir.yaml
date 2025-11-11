@@ -1,6 +1,6 @@
 MODEL:
   ADAPTATION: eata_reservoirtta
-  ARCH: Standard
+  ARCH: wide_resnet50_2
 TEST:
   BATCH_SIZE: 200
 CORRUPTION:

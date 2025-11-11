@@ -12,15 +12,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
-from utils.misc import ema_update_model
 from methods.base import TTAMethod
 from datasets.data_loading import get_source_loader
 from utils.registry import ADAPTATION_REGISTRY
 from utils.losses import Entropy
 from methods.reservoirtta_utils import Plug_in_Bowl
 from copy import deepcopy
-from tqdm import tqdm
-from schedulers import get_scheduler
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +27,8 @@ class EATA_ReservoirTTA(TTAMethod):
     """EATA adapts a model by entropy minimization during testing.
     Once EATAed, a model adapts itself by updating on every forward.
     """
-    def __init__(self, cfg, model, num_classes, scheduler: str = None):
-        super().__init__(cfg, model, num_classes, scheduler=scheduler)
+    def __init__(self, cfg, model, num_classes):
+        super().__init__(cfg, model, num_classes)
 
         self.num_samples_update_1 = 0  # number of samples after first filtering, exclude unreliable samples
         self.num_samples_update_2 = 0  # number of samples after second filtering, exclude both unreliable and redundant samples

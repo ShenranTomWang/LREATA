@@ -1,6 +1,6 @@
 MODEL:
-  ADAPTATION: lreata_reservoir
-  ARCH: resnet50
+  ADAPTATION: lreata
+  ARCH: wide_resnet50_2
 TEST:
   BATCH_SIZE: 64
 CORRUPTION:
