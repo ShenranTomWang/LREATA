@@ -13,7 +13,6 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 
 from .reservoirtta_utils import Plug_in_Bowl
-from .shift_classifier import ShiftClassifier
 from methods.base import TTAMethod
 from datasets.data_loading import get_source_loader
 from utils.registry import ADAPTATION_REGISTRY
@@ -59,13 +58,11 @@ class LREATA(TTAMethod):
             logger.info("Not using EWC regularization. EATA decays to ETA!")
             self.fishers = None
 
-        self.shift_classifier = ShiftClassifier(cfg, img_size=self.img_size[0])
         self.scheduler = scheduler
         self.reservoir = Plug_in_Bowl(
             cfg, self.img_size[0], self.params, 
             student_optimizer=self.optimizer,
-            student_model=self.model,
-            scheduler=self.scheduler
+            student_model=self.model
         )
         self.scheduler_reservoir = {}
         self.scheduler = None

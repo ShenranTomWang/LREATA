@@ -144,6 +144,13 @@ _C.OPTIM.NESTEROV = True
 # L2 regularization
 _C.OPTIM.WD = 0.0
 
+_C.OPTIM.SCHEDULER = CfgNode()
+
+_C.OPTIM.SCHEDULER.NAME = ''
+_C.OPTIM.SCHEDULER.T_max = 1000
+_C.OPTIM.SCHEDULER.miu = 0
+_C.OPTIM.SCHEDULER.sigma = 0.1
+
 # --------------------------------- EATA options ---------------------------- #
 _C.EATA = CfgNode()
 

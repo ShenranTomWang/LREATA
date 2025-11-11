@@ -11,11 +11,12 @@ from methods.tent_reservoirtta import Tent_ReservoirTTA
 from methods.sar_reservoirtta import SAR_ReservoirTTA
 from methods.roid_reservoirtta import ROID_ReservoirTTA
 from methods.prompt_reservoirtta import Prompt_ReservoirTTA
+from methods.lreata import LREATA
 
 
 __all__ = [
     'Source', 'BNTest', 'BNAlpha', 'BNEMA',
     'Tent', 'EATA', 'SAR', 'ROID', "DPCore",
     "EATA_ReservoirTTA", "Tent_ReservoirTTA", "SAR_ReservoirTTA",
-    "ROID_ReservoirTTA", "Prompt_ReservoirTTA"
+    "ROID_ReservoirTTA", "Prompt_ReservoirTTA", "LREATA"
 ]
