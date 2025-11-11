@@ -5,7 +5,7 @@ TEST:
   BATCH_SIZE: 64
 CORRUPTION:
   NUM_EX: 5000
-  DATASET: imagenet_c
+  DATASET: cifar10_c
   SEVERITY:
     - 5
   TYPE:

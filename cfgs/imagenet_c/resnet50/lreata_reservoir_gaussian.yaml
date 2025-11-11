@@ -1,5 +1,5 @@
 MODEL:
-  ADAPTATION: eata_reservoir
+  ADAPTATION: lreata_reservoir
   ARCH: resnet50
 TEST:
   BATCH_SIZE: 64

@@ -5,7 +5,7 @@ TEST:
   BATCH_SIZE: 64
 CORRUPTION:
   NUM_EX: 5000
-  DATASET: imagenet_c
+  DATASET: cifar10_c
   SEVERITY:
     - 5
   TYPE:
@@ -31,8 +31,9 @@ OPTIM:
   STEPS: 1
   WD: 0.0
   SCHEDULER:
-    NAME: cosine_annealing
-    T_max: 1000
+    NAME: gaussian_annealing
+    miu: 0
+    sigma: 0.1
 EATA:
   FISHER_ALPHA: 2000.0
   D_MARGIN: 0.05
